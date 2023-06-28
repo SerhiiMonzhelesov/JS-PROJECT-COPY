@@ -2,6 +2,21 @@ import axios from 'axios';
 
 const allBooks = document.querySelector('.all-books-area');
 
+allBooks.addEventListener('click', handlerClickLoad);
+async function handlerClickLoad(event) {
+  if (event.target.nodeName !== 'BUTTON') return;
+  else {
+    try {
+      const categoryName =
+        event.target.closest('div').firstElementChild.textContent;
+      const booksLoadMore = await getBooksByCategory(categoryName);
+      renderBooks(booksLoadMore);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
 async function loadTopBooks() {
   try {
     const data = await axios.get(
@@ -19,18 +34,19 @@ function renderTopBooks(arr) {
   if (document.documentElement.clientWidth < 768) {
     let markTopBooks = arr
       .map(({ books: [{ _id, title, author, book_image }], list_name }) => {
-        return `<div class="books-field">
-          <h2 class="category-title">${list_name}</h2>
+        return `<div class="home-books-field">
+          <h2 class="home-category-title">${list_name}</h2>
 
-          <ul class="book-list">
-          <li class="book-item" data-id="${_id}">
+          <ul class="home-book-list">
+          <li class="home-book-item" data-id="${_id}">
               <img src="${book_image}"
                 alt="${title}"
                 width="335"
-                class="book-photo"
+                heigth="485"
+                class="home-book-photo"
                 loading="lazy">
-              <h3 class="book-name">${title}</h3>
-              <p class="book-author">${author}</p>
+              <h3 class="home-book-name">${title}</h3>
+              <p class="home-book-author">${author}</p>
             </li>
           </ul>
           
@@ -45,51 +61,79 @@ function renderTopBooks(arr) {
     let markupTopBooks = arr
       .map(({ books, list_name }) => {
         let markItem = renderMarkupBook(books);
-        return `<div class="books-field">
-     <h2 class="category-title">${list_name}</h2>
-     <ul class="book-list">${markItem}</ul><button class="btn load-more">see more</button>
+        return `<div class="home-books-field">
+     <h2 class="home-category-title">${list_name}</h2>
+     <ul class="home-book-list">${markItem}</ul><button class="btn load-more">see more</button>
      </div>`;
       })
       .join('');
     allBooks.innerHTML = markupTopBooks;
   }
 }
-
+console.log(document.documentElement.clientWidth);
 function renderMarkupBook(books) {
   let markItem = '';
   for (let i = 0; i < 3; i += 1) {
-    markItem += `<li class="book-item" data-id="${books[i]._id}">
+    markItem += `<li class="home-book-item" data-id="${books[i]._id}">
               <img src="${books[i].book_image}"
                 alt="${books[i].title}"
                 width="218"
                 heigth="316"
-                class="book-photo"
+                class="home-book-photo"
                 loading="lazy">
-              <h3 class="book-name">${books[i].title}</h3>
-              <p class="book-author">${books[i].author}</p>
+              <h3 class="home-book-name">${books[i].title}</h3>
+              <p class="home-book-author">${books[i].author}</p>
             </li>`;
   }
   return markItem;
 }
+// ===========================================================
 
-const fetchUsers = async () => {
-  const baseUrl = 'https://jsonplaceholder.typicode.com';
-  const userIds = [1, 2, 3];
+// =====================ALINA FETCH AND RENDER=============================
+async function getBooksByCategory(selectedCategory) {
+  const response = await axios.get(
+    `https://books-backend.p.goit.global/books/category`,
+    {
+      params: {
+        category: selectedCategory,
+      },
+    }
+  );
+  return response;
+}
 
-  // 1. Створюємо масив промісів
-  const arrayOfPromises = userIds.map(async userId => {
-    const response = await fetch(`${baseUrl}/users/${userId}`);
-    return response.json();
-  });
+function renderBooks({ data }) {
+  console.log(data);
+  const markBooksLoadMore = data
+    .map(({ book_image, book_image_width, title, author, _id }) => {
+      return ` <li data-id="${_id}"><img
+    src="${book_image}"
+    alt="${title}"
+    width="${book_image_width}"
+    class="book-photo"
+    loading="lazy"
+    />
+    <h3 class="book-name">${title}</h3>
+    <p class="book-author">${author}</p>
+    </li>`;
+    })
+    .join();
+  allBooks.innerHTML = markBooksLoadMore;
+}
 
-  // 2. Запускаємо усі проміси паралельно і чекаємо на їх завершення
-  const users = await Promise.all(arrayOfPromises);
-  console.log(users);
-};
+// const fetchUsers = async () => {
+//   const baseUrl = 'https://jsonplaceholder.typicode.com';
+//   const userIds = [1, 2, 3];
 
-fetchUsers();
-// btnLoadMore.addEventListener('click', handlerClickLoad);
-// function handlerClickLoad(event) {
-//   // const div = event.target.closest('div');
-//   console.log(event.currentTarget);
-// }
+//   // 1. Створюємо масив промісів
+//   const arrayOfPromises = userIds.map(async userId => {
+//     const response = await fetch(`${baseUrl}/users/${userId}`);
+//     return response.json();
+//   });
+
+//   // 2. Запускаємо усі проміси паралельно і чекаємо на їх завершення
+//   const users = await Promise.all(arrayOfPromises);
+//   console.log(users);
+// };
+
+// fetchUsers();
