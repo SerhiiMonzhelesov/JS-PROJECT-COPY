@@ -1,4 +1,6 @@
 import axios from 'axios';
+import 'lazysizes';
+import 'lazysizes/plugins/parent-fit/ls.parent-fit';
 
 const allBooks = document.querySelector('.all-books-area');
 const screenWidth = window.screen.width;
@@ -32,6 +34,8 @@ async function loadTopBooks() {
 loadTopBooks();
 
 function renderTopBooks(arr) {
+  console.log(arr[0].books[0]);
+
   let markTopBooks = '';
   let valueIteration = 0;
   if (screenWidth < 768) {
@@ -42,12 +46,12 @@ function renderTopBooks(arr) {
 
           <ul class="home-book-list">
           <li class="home-book-item" data-id="${_id}">
-              <img src="${book_image}"
+              <img data-src="${book_image}"
                 alt="${title}"
                 width="335"
                 heigth="485"
-                class="home-book-photo"
-                loading="lazy">
+                class="lazyload home-book-photo blur-up"
+                >
               <h3 class="home-book-name">${title}</h3>
               <p class="home-book-author">${author}</p>
             </li>
@@ -59,7 +63,6 @@ function renderTopBooks(arr) {
       .join('');
     allBooks.innerHTML = markTopBooks;
   } else if (screenWidth >= 768 && screenWidth < 1440) {
-    console.log('tablet', window.screen.width);
     let widthImg = 218;
     let heigthImg = 316;
     markTopBooks = arr
@@ -79,7 +82,6 @@ function renderTopBooks(arr) {
       .join('');
     allBooks.innerHTML = markTopBooks;
   } else {
-    console.log('desktop', window.screen.width);
     let widthImg = 180;
     let heigthImg = 256;
     markTopBooks = arr
@@ -105,12 +107,12 @@ function renderMarkupBook(books, valueIteration, widthImg, heigthImg) {
   let markItem = '';
   for (let i = 0; i < valueIteration; i += 1) {
     markItem += `<li class="home-book-item" data-id="${books[i]._id}">
-              <img src="${books[i].book_image}"
+              <img data-src="${books[i].book_image}"
                 alt="${books[i].title}"
                 width="${widthImg}"
                 heigth="${heigthImg}"
-                class="home-book-photo"
-                loading="lazy">
+                class="lazyload home-book-photo blur-up"
+                >
               <h3 class="home-book-name">${books[i].title}</h3>
               <p class="home-book-author">${books[i].author}</p>
             </li>`;
