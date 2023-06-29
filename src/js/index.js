@@ -5,6 +5,10 @@ import 'lazysizes/plugins/parent-fit/ls.parent-fit';
 const allBooks = document.querySelector('.all-books-area');
 const screenWidth = window.screen.width;
 
+loadTopBooks().then(data => {
+  allBooks.innerHTML = renderTopBooks(data.data);
+});
+
 allBooks.addEventListener('click', handlerClickLoad);
 async function handlerClickLoad(event) {
   if (event.target.nodeName !== 'BUTTON') return;
@@ -25,13 +29,11 @@ async function loadTopBooks() {
     const data = await axios.get(
       'https://books-backend.p.goit.global/books/top-books'
     );
-    renderTopBooks(data.data);
+    return data;
   } catch {
     error => console.log(error);
   }
 }
-
-loadTopBooks();
 
 function renderTopBooks(arr) {
   console.log(arr[0].books[0]);
@@ -39,7 +41,7 @@ function renderTopBooks(arr) {
   let markTopBooks = '';
   let valueIteration = 0;
   if (screenWidth < 768) {
-    markTopBooks = arr
+    return arr
       .map(({ books: [{ _id, title, author, book_image }], list_name }) => {
         return `<div class="home-books-field">
           <h2 class="home-category-title">${list_name}</h2>
@@ -61,11 +63,10 @@ function renderTopBooks(arr) {
         </div>`;
       })
       .join('');
-    allBooks.innerHTML = markTopBooks;
   } else if (screenWidth >= 768 && screenWidth < 1440) {
     let widthImg = 218;
     let heigthImg = 316;
-    markTopBooks = arr
+    return arr
       .map(({ books, list_name }) => {
         valueIteration = 3;
         let markItems = renderMarkupBook(
@@ -80,11 +81,10 @@ function renderTopBooks(arr) {
      </div>`;
       })
       .join('');
-    allBooks.innerHTML = markTopBooks;
   } else {
     let widthImg = 180;
     let heigthImg = 256;
-    markTopBooks = arr
+    return arr
       .map(({ books, list_name }) => {
         valueIteration = 5;
         let markItems = renderMarkupBook(
@@ -99,7 +99,6 @@ function renderTopBooks(arr) {
      </div>`;
       })
       .join('');
-    allBooks.innerHTML = markTopBooks;
   }
 }
 
