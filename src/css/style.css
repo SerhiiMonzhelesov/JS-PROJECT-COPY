@@ -75,7 +75,8 @@ img {
 .home-category-title {
   margin-bottom: 18px;
   color: var(--paragraf-color);
-  font-weight: normal;
+  font-weight: 400;
+  font-style: normal;
   font-size: 14px;
   line-height: 1.29;
   letter-spacing: 0.42px;
@@ -113,6 +114,7 @@ img {
   margin: 0 0 4px 0;
   font-size: 16px;
   font-weight: 700;
+  font-style: normal;
   line-height: 1.13;
   letter-spacing: -0.64px;
   text-transform: uppercase;
@@ -132,6 +134,7 @@ img {
   align-items: flex-start;
   border-radius: 40px;
   border: 2px solid var(--accent-color);
+  font-style: normal;
   font-size: 14px;
   font-weight: 700;
   line-height: 1.29;
@@ -178,5 +181,42 @@ img {
 
   .home-book-author {
     margin-bottom: 8px;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .container-home {
+      width: 1440px;
+      padding-left: 24px;
+      padding-right: 24px;
+      margin: 0 auto;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+  .all-books-area{
+    max-width: 996px;
+  }
+
+  .home-books-field{
+    max-width: 996px;
+  }
+
+  .home-book-list {
+    max-width: 996px;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+  }
+
+  .home-book-item {
+    width: 180px;
+  }
+
+  .home-book-photo {
+    display: block;
+    max-width: 180px;
+    height: 256px;
   }
 }

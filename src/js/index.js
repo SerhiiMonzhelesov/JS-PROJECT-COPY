@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 const allBooks = document.querySelector('.all-books-area');
+const screenWidth = window.screen.width;
 
 allBooks.addEventListener('click', handlerClickLoad);
 async function handlerClickLoad(event) {
@@ -31,8 +32,10 @@ async function loadTopBooks() {
 loadTopBooks();
 
 function renderTopBooks(arr) {
-  if (document.documentElement.clientWidth < 768) {
-    let markTopBooks = arr
+  let markTopBooks = '';
+  let valueIteration = 0;
+  if (screenWidth < 768) {
+    markTopBooks = arr
       .map(({ books: [{ _id, title, author, book_image }], list_name }) => {
         return `<div class="home-books-field">
           <h2 class="home-category-title">${list_name}</h2>
@@ -55,30 +58,57 @@ function renderTopBooks(arr) {
       })
       .join('');
     allBooks.innerHTML = markTopBooks;
-  }
-
-  if (document.documentElement.clientWidth >= 768) {
-    let markupTopBooks = arr
+  } else if (screenWidth >= 768 && screenWidth < 1440) {
+    console.log('tablet', window.screen.width);
+    let widthImg = 218;
+    let heigthImg = 316;
+    markTopBooks = arr
       .map(({ books, list_name }) => {
-        let markItem = renderMarkupBook(books);
+        valueIteration = 3;
+        let markItems = renderMarkupBook(
+          books,
+          valueIteration,
+          widthImg,
+          heigthImg
+        );
         return `<div class="home-books-field">
      <h2 class="home-category-title">${list_name}</h2>
-     <ul class="home-book-list">${markItem}</ul><button class="btn load-more">see more</button>
+     <ul class="home-book-list">${markItems}</ul><button class="btn load-more">see more</button>
      </div>`;
       })
       .join('');
-    allBooks.innerHTML = markupTopBooks;
+    allBooks.innerHTML = markTopBooks;
+  } else {
+    console.log('desktop', window.screen.width);
+    let widthImg = 180;
+    let heigthImg = 256;
+    markTopBooks = arr
+      .map(({ books, list_name }) => {
+        valueIteration = 5;
+        let markItems = renderMarkupBook(
+          books,
+          valueIteration,
+          widthImg,
+          heigthImg
+        );
+        return `<div class="home-books-field">
+     <h2 class="home-category-title">${list_name}</h2>
+     <ul class="home-book-list">${markItems}</ul><button class="btn load-more">see more</button>
+     </div>`;
+      })
+      .join('');
+    allBooks.innerHTML = markTopBooks;
   }
 }
-console.log(document.documentElement.clientWidth);
-function renderMarkupBook(books) {
+
+function renderMarkupBook(books, valueIteration, widthImg, heigthImg) {
   let markItem = '';
-  for (let i = 0; i < 3; i += 1) {
+  for (let i = 0; i < valueIteration; i += 1) {
     markItem += `<li class="home-book-item" data-id="${books[i]._id}">
               <img src="${books[i].book_image}"
                 alt="${books[i].title}"
-                width="218"
-                heigth="316"
+                width="${widthImg}"
+                heigth="${heigthImg}"
                 class="home-book-photo"
                 loading="lazy">
               <h3 class="home-book-name">${books[i].title}</h3>
