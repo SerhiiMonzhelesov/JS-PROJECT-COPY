@@ -3,7 +3,7 @@ import 'lazysizes';
 import 'lazysizes/plugins/parent-fit/ls.parent-fit';
 
 const allBooks = document.querySelector('.all-books-area');
-const screenWidth = window.screen.width;
+const titlePage = document.querySelector('.home-title');
 
 loadTopBooks().then(data => {
   allBooks.innerHTML = renderTopBooks(data.data);
@@ -17,8 +17,9 @@ async function handlerClickLoad(event) {
       const categoryName =
         event.target.closest('div').firstElementChild.textContent;
       const booksLoadMore = await getBooksByCategory(categoryName);
-
+      makeTitleAccent(categoryName);
       allBooks.innerHTML = renderBooks(booksLoadMore);
+      window.scrollTo(0, 0);
     } catch (error) {
       console.log(error);
     }
@@ -36,11 +37,10 @@ async function loadTopBooks() {
   }
 }
 
-let valueIteration = 0;
-
 function renderTopBooks(arr) {
-  // console.log(arr[0].books[0]);
-  if (screenWidth < 768) {
+  let valueIteration = 0;
+
+  if (window.screen.width < 768) {
     return arr
       .map(({ books: [{ _id, title, author, book_image }], list_name }) => {
         return `<div class="home-books-field">
@@ -61,7 +61,7 @@ function renderTopBooks(arr) {
         </div>`;
       })
       .join('');
-  } else if (screenWidth >= 768 && screenWidth < 1440) {
+  } else if (window.screen.width >= 768 && window.screen.width < 1440) {
     return arr
       .map(({ books, list_name }) => {
         valueIteration = 3;
@@ -118,8 +118,6 @@ async function getBooksByCategory(selectedCategory) {
 function renderBooks({ data }) {
   console.log(data);
   let markLoadItems = '';
-  let markupLoadCategory = '';
-
   markLoadItems += data
     .map(({ _id, title, author, book_image }) => {
       return `<li class="home-book-item" data-id="${_id}">
@@ -132,8 +130,7 @@ function renderBooks({ data }) {
             </li>`;
     })
     .join('');
-
-  markupLoadCategory = `<ul class="home-book-list">${markLoadItems}</ul>`;
+  let markupLoadCategory = `<ul class="home-book-list">${markLoadItems}</ul>`;
   return markupLoadCategory;
 
   // const markBooksLoadMore = data
@@ -153,19 +150,11 @@ function renderBooks({ data }) {
   // return markBooksLoadMore;
 }
 
-// const fetchUsers = async () => {
-//   const baseUrl = 'https://jsonplaceholder.typicode.com';
-//   const userIds = [1, 2, 3];
-
-//   // 1. Створюємо масив промісів
-//   const arrayOfPromises = userIds.map(async userId => {
-//     const response = await fetch(`${baseUrl}/users/${userId}`);
-//     return response.json();
-//   });
-
-//   // 2. Запускаємо усі проміси паралельно і чекаємо на їх завершення
-//   const users = await Promise.all(arrayOfPromises);
-//   console.log(users);
-// };
-
-// fetchUsers();
+function makeTitleAccent(categoryName) {
+  const arrOfName = categoryName.split(' ');
+  titlePage.textContent = arrOfName.slice(0, arrOfName.length - 1).join(' ');
+  titlePage.insertAdjacentHTML(
+    'beforeend',
+    ` <span class="home-title-accent">${arrOfName[arrOfName.length - 1]}</span>`
+  );
+}
