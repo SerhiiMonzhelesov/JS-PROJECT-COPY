@@ -4,12 +4,14 @@ import 'lazysizes/plugins/parent-fit/ls.parent-fit';
 
 const allBooks = document.querySelector('.all-books-area');
 const titlePage = document.querySelector('.home-title');
+let titleBook = '';
 
 loadTopBooks().then(data => {
   allBooks.innerHTML = renderTopBooks(data.data);
 });
 
 allBooks.addEventListener('click', handlerClickLoad);
+
 async function handlerClickLoad(event) {
   if (event.target.nodeName !== 'BUTTON') return;
   else {
@@ -43,6 +45,7 @@ function renderTopBooks(arr) {
   if (window.screen.width < 768) {
     return arr
       .map(({ books: [{ _id, title, author, book_image }], list_name }) => {
+        titleBook = clipBookTitle(title);
         return `<div class="home-books-field">
           <h2 class="home-category-title">${list_name}</h2>
 
@@ -52,7 +55,7 @@ function renderTopBooks(arr) {
                 alt="${title}"
                 class="lazyload home-book-photo blur-up"
                 >
-              <h3 class="home-book-name">${title}</h3>
+              <h3 class="home-book-name">${titleBook}</h3>
               <p class="home-book-author">${author}</p>
             </li>
           </ul>
@@ -88,13 +91,15 @@ function renderTopBooks(arr) {
 
 function renderMarkupBook(books, valueIteration) {
   let markItem = '';
+
   for (let i = 0; i < valueIteration; i += 1) {
+    titleBook = clipBookTitle(books[i].title);
     markItem += `<li class="home-book-item" data-id="${books[i]._id}">
               <img data-src="${books[i].book_image}"
                 alt="${books[i].title}"
                 class="lazyload home-book-photo blur-up"
                 >
-              <h3 class="home-book-name">${books[i].title}</h3>
+              <h3 class="home-book-name">${titleBook}</h3>
               <p class="home-book-author">${books[i].author}</p>
             </li>`;
   }
@@ -116,16 +121,16 @@ async function getBooksByCategory(selectedCategory) {
 }
 
 function renderBooks({ data }) {
-  console.log(data);
   let markLoadItems = '';
   markLoadItems += data
     .map(({ _id, title, author, book_image }) => {
+      titleBook = clipBookTitle(title);
       return `<li class="home-book-item" data-id="${_id}">
               <img data-src="${book_image}"
                 alt="${title}"
                 class="lazyload home-book-photo blur-up"
                 >
-              <h3 class="home-book-name">${title}</h3>
+              <h3 class="home-book-name">${titleBook}</h3>
               <p class="home-book-author">${author}</p>
             </li>`;
     })
@@ -157,4 +162,25 @@ function makeTitleAccent(categoryName) {
     'beforeend',
     ` <span class="home-title-accent">${arrOfName[arrOfName.length - 1]}</span>`
   );
+}
+
+function clipBookTitle(title) {
+  let clippedTitle = '';
+  if (window.screen.width < 768) {
+    let maxLength = 33;
+    title.length > maxLength
+      ? (clippedTitle = title.slice(0, maxLength - 1) + '...')
+      : (clippedTitle = title);
+  } else if (window.screen.width >= 768 && window.screen.width < 1440) {
+    let maxLength = 21;
+    title.length > maxLength
+      ? (clippedTitle = title.slice(0, maxLength - 1) + '...')
+      : (clippedTitle = title);
+  } else {
+    let maxLength = 18;
+    title.length > maxLength
+      ? (clippedTitle = title.slice(0, maxLength - 1) + '...')
+      : (clippedTitle = title);
+  }
+  return clippedTitle;
 }
