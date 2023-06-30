@@ -103,10 +103,14 @@ img {
   margin-bottom: 8px;
 }
 
+.home-book-item{
+  width: 335px;
+}
+
 .home-book-photo {
   display: block;
-  max-width: 335px;
   width: 100%;
+  max-width: 335px;
   margin-bottom: 14px;
   height: 485px;
 }
