@@ -17,7 +17,8 @@ async function handlerClickLoad(event) {
       const categoryName =
         event.target.closest('div').firstElementChild.textContent;
       const booksLoadMore = await getBooksByCategory(categoryName);
-      renderBooks(booksLoadMore);
+
+      allBooks.innerHTML = renderBooks(booksLoadMore);
     } catch (error) {
       console.log(error);
     }
@@ -35,11 +36,12 @@ async function loadTopBooks() {
   }
 }
 
-function renderTopBooks(arr) {
-  console.log(arr[0].books[0]);
+let valueIteration = 0;
+let widthImg = 0;
+let heigthImg = 0;
 
-  let markTopBooks = '';
-  let valueIteration = 0;
+function renderTopBooks(arr) {
+  // console.log(arr[0].books[0]);
   if (screenWidth < 768) {
     return arr
       .map(({ books: [{ _id, title, author, book_image }], list_name }) => {
@@ -64,8 +66,8 @@ function renderTopBooks(arr) {
       })
       .join('');
   } else if (screenWidth >= 768 && screenWidth < 1440) {
-    let widthImg = 218;
-    let heigthImg = 316;
+    widthImg = 218;
+    heigthImg = 316;
     return arr
       .map(({ books, list_name }) => {
         valueIteration = 3;
@@ -82,8 +84,8 @@ function renderTopBooks(arr) {
       })
       .join('');
   } else {
-    let widthImg = 180;
-    let heigthImg = 256;
+    widthImg = 180;
+    heigthImg = 256;
     return arr
       .map(({ books, list_name }) => {
         valueIteration = 5;
@@ -135,21 +137,43 @@ async function getBooksByCategory(selectedCategory) {
 
 function renderBooks({ data }) {
   console.log(data);
-  const markBooksLoadMore = data
-    .map(({ book_image, book_image_width, title, author, _id }) => {
-      return ` <li data-id="${_id}"><img
-    src="${book_image}"
-    alt="${title}"
-    width="${book_image_width}"
-    class="book-photo"
-    loading="lazy"
-    />
-    <h3 class="book-name">${title}</h3>
-    <p class="book-author">${author}</p>
-    </li>`;
+  let markLoadItems = '';
+  let markupLoadCategory = '';
+
+  widthImg = 335;
+  heigthImg = 485;
+  markLoadItems += data
+    .map(({ _id, title, author, book_image }) => {
+      return `<li class="home-book-item" data-id="${_id}">
+              <img data-src="${book_image}"
+                alt="${title}"
+                width="${widthImg}"
+                heigth="${heigthImg}"
+                class="lazyload home-book-photo blur-up"
+                >
+              <h3 class="home-book-name">${title}</h3>
+              <p class="home-book-author">${author}</p>
+            </li>`;
     })
-    .join();
-  allBooks.innerHTML = markBooksLoadMore;
+    .join('');
+  markupLoadCategory = `<ul class="home-book-list">${markLoadItems}</ul>`;
+  return markupLoadCategory;
+
+  // const markBooksLoadMore = data
+  //   .map(({ _id, title, author, book_image }) => {
+  //     return ` <li data-id="${_id}" class="home-book-item"><img
+  //   src="${book_image}"
+  //   alt="${title}"
+
+  //   class="home-book-photo"
+  //   loading="lazy"
+  //   />
+  //   <h3 class="home-book-name">${title}</h3>
+  //   <p class="home-book-author">${author}</p>
+  //   </li>`;
+  //   })
+  //   .join();
+  // return markBooksLoadMore;
 }
 
 // const fetchUsers = async () => {
