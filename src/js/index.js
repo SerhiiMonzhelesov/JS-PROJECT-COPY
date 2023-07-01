@@ -51,10 +51,11 @@ function renderTopBooks(arr) {
 
           <ul class="home-book-list">
           <li class="home-book-item" data-id="${_id}">
+              <div class="home-thumb-photo">
               <img data-src="${book_image}"
                 alt="${title}"
                 class="lazyload home-book-photo blur-up"
-                >
+                ></div>
               <h3 class="home-book-name">${titleBook}</h3>
               <p class="home-book-author">${author}</p>
             </li>
@@ -95,10 +96,12 @@ function renderMarkupBook(books, valueIteration) {
   for (let i = 0; i < valueIteration; i += 1) {
     titleBook = clipBookTitle(books[i].title);
     markItem += `<li class="home-book-item" data-id="${books[i]._id}">
-              <img data-src="${books[i].book_image}"
+              <div class="home-thumb-photo"><img data-src="${books[i].book_image}"
                 alt="${books[i].title}"
                 class="lazyload home-book-photo blur-up"
-                >
+                ><p class="overlay-text">quick view</p>
+                </div>
+                
               <h3 class="home-book-name">${titleBook}</h3>
               <p class="home-book-author">${books[i].author}</p>
             </li>`;
@@ -126,10 +129,12 @@ function renderBooks({ data }) {
     .map(({ _id, title, author, book_image }) => {
       titleBook = clipBookTitle(title);
       return `<li class="home-book-item" data-id="${_id}">
+              <div class="home-thumb-photo">
               <img data-src="${book_image}"
                 alt="${title}"
                 class="lazyload home-book-photo blur-up"
-                >
+                ><p class="overlay-text">quick view</p>
+                </div>
               <h3 class="home-book-name">${titleBook}</h3>
               <p class="home-book-author">${author}</p>
             </li>`;
